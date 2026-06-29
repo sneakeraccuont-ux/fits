@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -626,7 +624,7 @@
 <div class="section" id="stats">
   <div class="stats-hero">
     <div class="stats-name">Niculin Jörimann</div>
-    <div class="stats-age">17 Jahre — Athlet</div>
+    <div class="stats-age">17 Jahre - Mogger</div>
     <div class="stats-grid">
       <div class="stat-item">
         <div class="stat-label">Grösse</div>
@@ -646,23 +644,23 @@
     <div class="sizes-grid">
       <div class="size-chip">
         <div class="size-chip-label">Shirt</div>
-        <div class="size-chip-val" id="sz-shirt">L/XL</div>
+        <div class="size-chip-val" id="sz-shirt">M/L</div>
       </div>
       <div class="size-chip">
         <div class="size-chip-label">Hose</div>
-        <div class="size-chip-val" id="sz-pants">32/34</div>
+        <div class="size-chip-val" id="sz-pants">38/40</div>
       </div>
       <div class="size-chip">
         <div class="size-chip-label">Schuhe</div>
-        <div class="size-chip-val" id="sz-shoes">45</div>
+        <div class="size-chip-val" id="sz-shoes">46</div>
       </div>
       <div class="size-chip">
         <div class="size-chip-label">Jacke</div>
-        <div class="size-chip-val" id="sz-jacket">L</div>
+        <div class="size-chip-val" id="sz-jacket">M/L</div>
       </div>
       <div class="size-chip">
         <div class="size-chip-label">Kappe</div>
-        <div class="size-chip-val" id="sz-cap">M</div>
+        <div class="size-chip-val" id="sz-cap">XL</div>
       </div>
       <div class="size-chip">
         <div class="size-chip-label">Gürtel</div>
@@ -779,21 +777,34 @@
 
   // Seed with Nike Air Max 95 if wishlist empty
   if (wishlist.length === 0) {
-    wishlist.push({
-      id: Date.now(),
-      brand: 'Nike',
-      name: 'Air Max 95 Olive/Stone',
-      price: '180',
-      size: '45',
-      category: 'Schuhe',
-      priority: 'high',
-      note: 'Gesehen auf Snkrs — passt perfekt zum Cargo-Look 🔥',
-      img: SHOE_B64,
-      isShoe: true
-    });
-    save();
-  }
 
+  wishlist.push({
+    id: Date.now(),
+    brand: 'Nike',
+    name: 'Air Max 95 Olive/Stone',
+    price: '200',
+    size: '46',
+    category: 'Schuhe',
+    priority: 'high',
+    img: SHOE_B64,
+    isShoe: true
+  });
+
+  wishlist.push({
+    id: Date.now() + 1,
+    brand: 'Adidas',
+    name: 'Campus 00s',
+    price: '140',
+    size: '46',
+    category: 'Schuhe',
+    priority: 'mid',
+    img: '',
+    isShoe: false
+  });
+
+  save();
+}
+  
   function save() {
     localStorage.setItem('fits_wishlist', JSON.stringify(wishlist));
     localStorage.setItem('fits_stats', JSON.stringify(bodyStats));
