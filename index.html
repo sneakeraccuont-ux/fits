@@ -776,33 +776,44 @@
   let editField = null;
 
   // Seed with Nike Air Max 95 if wishlist empty
-  if (wishlist.length === 0) {
+if (wishlist.length === 0) {
+    wishlist.push({
+        id: Date.now(),
+        brand: 'Nike',
+        name: 'Air Max 95 Olive/Stone',
+        price: '180',
+        size: '45',
+        category: 'Schuhe',
+        priority: 'high',
+        note: 'Gesehen auf Snkrs — passt perfekt zum Cargo-Look 🔥',
+        img: SHOE_B64,
+        isShoe: true
+});
+    
+    wishlist.push({
+        id: Date.now() + 1,
+        brand: 'Adidas',
+        name: 'Campus 00s',
+        price: '130',
+        size: '45',
+        category: 'Schuhe',
+        priority: 'mid',
+        note: 'Schwarz',
+        img: 'BILD_URL'
+});
 
-  wishlist.push({
-    id: Date.now(),
-    brand: 'Nike',
-    name: 'Air Max 95 Olive/Stone',
-    price: '200',
-    size: '46',
-    category: 'Schuhe',
-    priority: 'high',
-    img: SHOE_B64,
-    isShoe: true
-  });
-
-  wishlist.push({
-    id: Date.now() + 1,
-    brand: 'Adidas',
-    name: 'Campus 00s',
-    price: '140',
-    size: '46',
-    category: 'Schuhe',
-    priority: 'mid',
-    img: '',
-    isShoe: false
-  });
-
-  save();
+    wishlist.push({
+        id: Date.now() + 2,
+        brand: 'New Balance',
+        name: '9060',
+        price: '199',
+        size: '45',
+        category: 'Schuhe',
+        priority: 'low',
+        note: 'Sea Salt',
+        img: 'BILD_URL'
+});
+    save();
 }
   
   function save() {
