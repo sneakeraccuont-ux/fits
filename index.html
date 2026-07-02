@@ -136,6 +136,55 @@
     margin-bottom: 14px;
   }
 
+  /* ---------- Search bar ---------- */
+  .search-bar-wrap{
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .search-bar-wrap svg{
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    stroke: var(--text-faint);
+    fill: none;
+    stroke-width: 1.8;
+    pointer-events: none;
+  }
+  .search-input{
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    padding: 12px 36px 12px 38px;
+    outline: none;
+    transition: border-color .15s ease;
+  }
+  .search-input::placeholder{ color: var(--text-faint); }
+  .search-input:focus{ border-color: var(--pink-dim); }
+  .search-clear{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .search-clear.show{ display:flex; }
+
   /* ---------- Empty state ---------- */
   .empty-state{
     margin-top: 18vh;
@@ -655,6 +704,13 @@
   <!-- WISHLIST -->
   <section class="view active" id="view-wishlist">
     <div class="section-label" id="wishlistCount">Wishlist</div>
+
+    <div class="search-bar-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" class="search-input" id="wishlistSearch" placeholder="Nach Namen suchen..." autocomplete="off">
+      <div class="search-clear" id="searchClearBtn">✕</div>
+    </div>
+
     <div id="wishlistEmpty" class="empty-state">
       <div class="glyph">F.</div>
       <h3>Noch nichts gespeichert</h3>
@@ -844,6 +900,7 @@
   let bodyData = loadBody();
   let pendingImage = null; // data URL or remote URL currently staged in modal
   let selectedPrio = 'Mittel';
+  let searchQuery = '';
 
   /* ---------------- Tabs ---------------- */
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -961,6 +1018,24 @@
     closeModal();
   });
 
+  /* ---------------- Search ---------------- */
+  const wishlistSearchInput = document.getElementById('wishlistSearch');
+  const searchClearBtn = document.getElementById('searchClearBtn');
+
+  wishlistSearchInput.addEventListener('input', function(){
+    searchQuery = wishlistSearchInput.value.trim().toLowerCase();
+    searchClearBtn.classList.toggle('show', searchQuery.length > 0);
+    renderWishlist();
+  });
+
+  searchClearBtn.addEventListener('click', function(){
+    wishlistSearchInput.value = '';
+    searchQuery = '';
+    searchClearBtn.classList.remove('show');
+    renderWishlist();
+    wishlistSearchInput.focus();
+  });
+
   /* ---------------- Render wishlist ---------------- */
   const wishlistGrid = document.getElementById('wishlistGrid');
   const wishlistEmpty = document.getElementById('wishlistEmpty');
@@ -975,17 +1050,38 @@
 
   function renderWishlist(){
     wishlistGrid.innerHTML = '';
+
+    const filtered = searchQuery
+      ? wishlist.filter(item => (item.name || '').toLowerCase().includes(searchQuery))
+      : wishlist;
+
     if(wishlist.length === 0){
       wishlistEmpty.style.display = 'block';
       wishlistGrid.style.display = 'none';
       wishlistCount.textContent = 'Wishlist';
+      wishlistEmpty.querySelector('.glyph').textContent = 'F.';
+      wishlistEmpty.querySelector('h3').textContent = 'Noch nichts gespeichert';
+      wishlistEmpty.querySelector('p').textContent = 'Tippe oben rechts auf „+", um dein erstes Piece zur Wishlist hinzuzufügen.';
       return;
     }
+
+    if(filtered.length === 0){
+      wishlistEmpty.style.display = 'block';
+      wishlistGrid.style.display = 'none';
+      wishlistCount.textContent = 'Wishlist · ' + wishlist.length;
+      wishlistEmpty.querySelector('.glyph').textContent = 'F.';
+      wishlistEmpty.querySelector('h3').textContent = 'Kein Treffer';
+      wishlistEmpty.querySelector('p').textContent = 'Es wurde kein Piece mit diesem Namen gefunden.';
+      return;
+    }
+
     wishlistEmpty.style.display = 'none';
     wishlistGrid.style.display = 'grid';
-    wishlistCount.textContent = 'Wishlist · ' + wishlist.length;
+    wishlistCount.textContent = searchQuery
+      ? 'Wishlist · ' + filtered.length + ' / ' + wishlist.length
+      : 'Wishlist · ' + wishlist.length;
 
-    wishlist.forEach(item=>{
+    filtered.forEach(item=>{
       const card = document.createElement('div');
       card.className = 'card';
 
