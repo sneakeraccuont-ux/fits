@@ -652,6 +652,15 @@
     padding: 9px 16px;
     border-radius: 10px;
   }
+  .size-chip-input{
+    width: 58px;
+    text-align: center;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color .15s ease;
+  }
+  .size-chip-input:focus{ border-color: var(--pink-dim); }
 
   /* ---------- Bottom Nav ---------- */
   .bottom-nav{
@@ -760,27 +769,37 @@
     <div class="size-groups">
       <div>
         <div class="size-group-label">Shirt</div>
-        <div class="size-chip-row"><div class="size-chip">M</div><div class="size-chip">L</div></div>
+        <div class="size-chip-row">
+          <input type="text" class="size-chip size-chip-input" data-cat="shirt" data-idx="0" value="M">
+          <input type="text" class="size-chip size-chip-input" data-cat="shirt" data-idx="1" value="L">
+        </div>
       </div>
       <div>
         <div class="size-group-label">Hoodie</div>
-        <div class="size-chip-row"><div class="size-chip">M</div><div class="size-chip">L</div></div>
+        <div class="size-chip-row">
+          <input type="text" class="size-chip size-chip-input" data-cat="hoodie" data-idx="0" value="M">
+          <input type="text" class="size-chip size-chip-input" data-cat="hoodie" data-idx="1" value="L">
+        </div>
       </div>
       <div>
         <div class="size-group-label">Jacke</div>
-        <div class="size-chip-row"><div class="size-chip">M</div><div class="size-chip">L</div></div>
+        <div class="size-chip-row">
+          <input type="text" class="size-chip size-chip-input" data-cat="jacke" data-idx="0" value="M">
+          <input type="text" class="size-chip size-chip-input" data-cat="jacke" data-idx="1" value="L">
+        </div>
       </div>
       <div>
         <div class="size-group-label">Hose</div>
-        <div class="size-chip-row"><div class="size-chip">38</div><div class="size-chip">40</div></div>
+        <div class="size-chip-row">
+          <input type="text" class="size-chip size-chip-input" data-cat="hose" data-idx="0" value="38">
+          <input type="text" class="size-chip size-chip-input" data-cat="hose" data-idx="1" value="40">
+        </div>
       </div>
       <div>
         <div class="size-group-label">Schuhe</div>
-        <div class="size-chip-row"><div class="size-chip">45</div></div>
-      </div>
-      <div>
-        <div class="size-group-label">Kappe</div>
-        <div class="size-chip-row"><div class="size-chip">M</div></div>
+        <div class="size-chip-row">
+          <input type="text" class="size-chip size-chip-input" data-cat="schuhe" data-idx="0" value="46">
+        </div>
       </div>
     </div>
   </section>
@@ -880,6 +899,7 @@
   /* ---------------- Storage ---------------- */
   const LS_WISHLIST = 'fits_wishlist';
   const LS_BODY = 'fits_body';
+  const LS_SIZES = 'fits_sizes';
 
   function loadWishlist(){
     try{ return JSON.parse(localStorage.getItem(LS_WISHLIST)) || []; }
@@ -895,9 +915,17 @@
   function saveBody(data){
     localStorage.setItem(LS_BODY, JSON.stringify(data));
   }
+  function loadSizes(){
+    try{ return JSON.parse(localStorage.getItem(LS_SIZES)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveSizes(data){
+    localStorage.setItem(LS_SIZES, JSON.stringify(data));
+  }
 
   let wishlist = loadWishlist();
   let bodyData = loadBody();
+  let sizesData = loadSizes();
   let pendingImage = null; // data URL or remote URL currently staged in modal
   let selectedPrio = 'Mittel';
   let searchQuery = '';
@@ -1170,9 +1198,27 @@
   heightInput.addEventListener('input', function(){ renderBMI(); persistBody(); });
   weightInput.addEventListener('input', function(){ renderBMI(); persistBody(); });
 
+  /* ---------------- Editierbare Grössen ---------------- */
+  function initSizeInputs(){
+    document.querySelectorAll('.size-chip-input').forEach(function(input){
+      const key = input.dataset.cat + '-' + input.dataset.idx;
+      if(sizesData[key] !== undefined){
+        input.value = sizesData[key];
+      } else {
+        sizesData[key] = input.value;
+      }
+      input.addEventListener('input', function(){
+        sizesData[key] = input.value;
+        saveSizes(sizesData);
+      });
+    });
+    saveSizes(sizesData);
+  }
+
   /* ---------------- Init ---------------- */
   renderWishlist();
   renderBMI();
+  initSizeInputs();
 
 })();
 </script>
